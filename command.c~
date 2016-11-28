@@ -76,7 +76,6 @@ block_t* search_tables(char* name, block_t** b)
 	}
 	for(int i=0;i< BLOCK_CAPACITY;i++)
 	{
-		printf("Comparing %s to table's %s..",name,tmp->tables[i]->name);
 		if(!strcmp((tmp->tables[i]->name), name))
 		{
 			printf("\nEncontrado...");
