@@ -35,7 +35,10 @@ int get_command(block_t** b)
 	else if(parse_command(input,"list") == TRUE)
 		list_tables(b);
 	else if(parse_command(input,"search") == TRUE)
-		search_tables(input, b);
+	{
+		table *t = search_tables(input, b);
+		printf("\nFound Table %s", t->name);
+	}
 	else
 		printf("?\n");
 	return 0;
@@ -57,7 +60,7 @@ void list_tables(block_t**b)
 	
 	list_tables( &(tmp->header->next) );
 }
-block_t* search_tables(char* name, block_t** b)
+table* search_tables(char* name, block_t** b)
 {
 	char* command;
 	command = strtok(name," ");
@@ -75,14 +78,15 @@ block_t* search_tables(char* name, block_t** b)
 		return NULL;
 	}
 	for(int i=0;i< BLOCK_CAPACITY;i++)
-	{
-		if(!strcmp((tmp->tables[i]->name), name))
+	{	
+		if(i >= tmp->header->amount_tables) break;
+	//	printf("Table %s\n", tmp->tables[i]->name);
+		if(!strcmp((tmp->tables[i]->name), command))
 		{
 			printf("\nEncontrado...");
-			return (*b);
+			return tmp->tables[i];
 		}
-		tmp = tmp->header->next;
-		if(tmp == NULL) break;
+		//tmp = tmp->header->next;
 	}
 		printf("\nNo Encontrado...");
 		return NULL;
