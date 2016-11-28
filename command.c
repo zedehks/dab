@@ -15,7 +15,7 @@ int get_command(block_t** b)
 {
 	char input[32];
 	for(int i = 0;i<32;i++)
-		input[i] = NULL;
+		input[i] = '\0';
 
 
 	printf("\nReady.\n");
@@ -34,6 +34,8 @@ int get_command(block_t** b)
 		clear();
 	else if(parse_command(input,"list") == TRUE)
 		list_tables(b);
+	else if(parse_command(input,"search") == TRUE)
+		search_tables(input, b);
 	else
 		printf("?\n");
 	return 0;
@@ -81,6 +83,25 @@ void add_table(char* name, block_t** b)
 		printf("\nCreated a new table \"%s\".\n",tmp);
 }
 
+block_t* search_tables(char* name, block_t** b)
+{
+	block_t* tmp = (*b);
+
+	if(tmp == NULL)
+		return NULL;
+
+	for(int i=0;i<BLOCK_CAPACITY;i++){
+		if(tmp->tables[i] == NULL){
+			return NULL;
+		}
+		else if(strcmp(tmp->tables[i]->name, name) == 0){
+			printf("\nEncontrado...");
+			return tmp;
+		}
+		tmp = tmp->header->next;
+	}
+}
+
 int parse_command(char command[32],char* comparison)
 {
 	//char buffer = command[0];
@@ -105,6 +126,7 @@ void print_help()
 	printf("Note the space between the command and the parameter (if needed).");
 	//printf("\nArguments choose the data structure:");
 	printf("\n\nadd [NAME]\tAdd a table with the given name (maximum length %d)\n",TABLE_NAME_LENGTH);
+	printf("\nsearch [NAME]\tsearch a table with the given name (maximum length %d)\n",TABLE_NAME_LENGTH);
 	printf("\nlist\tList all available tables\n");
 	printf("\nclear\tclears screen, may -not- work in non-POSIX terminals.\n");
 	printf("\nhelp\tPrint this help page\n");

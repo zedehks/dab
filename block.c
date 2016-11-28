@@ -26,8 +26,9 @@ int block_add_table(block_t** b, char* name)
 	if((*b)->header->amount_tables == BLOCK_CAPACITY)
 	{
 		printf("\nSwitching block...\n");
-		while(tmp->header->next != NULL) tmp++;
-		tmp->header->next = init_block_header(&(b));
+		while(tmp->header->next != NULL) 
+			tmp++;
+		tmp->header->next = init_block_header((b));
 		//tmp  = (*b)->header->next;
 		(*b)->header->next = tmp->header->next;
 

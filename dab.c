@@ -6,6 +6,7 @@
 #include  "table.h"
 #include "command.h"
 #include "block.h"
+
 int main()
 {
 	/*table* t = NULL;

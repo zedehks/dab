@@ -5,20 +5,24 @@
 #include <stdlib.h>
 #include <string.h>
 #include "table.h"
+#include "field.h"
 #define BLOCK_CAPACITY 4
 
 typedef struct block_t block_t;
 typedef struct block_t_header block_t_header;
+
 struct block_t
 {
 	block_t_header* header;
 	table *tables[BLOCK_CAPACITY];
+	field *field[BLOCK_CAPACITY];
 };
 struct block_t_header
 {
 	block_t* next;
 	block_t* previous;
 	int amount_tables;
+	int amount_fields;
 };
 
 block_t* init_block_t(block_t** previous);
