@@ -37,7 +37,7 @@ int get_command(block_t** b)
 	else if(parse_command(input,"search") == TRUE)
 	{
 		table *t = search_tables(input, b);
-		if(t != NULL) printf("\nFound Table %s", t->name);
+		printf("\nFound Table %s", t->name);
 	}
 	else
 		printf("?\n");

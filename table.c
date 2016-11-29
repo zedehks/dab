@@ -7,7 +7,7 @@ int init_table(table** t, int c, char name[TABLE_NAME_LENGTH])
 	//(*t)->name = name;
 	strcpy((*t)->name,name);
 	//(*t)->next = NULL;
-	if(!(*t) == NULL)
+	if(!(*t) == '\0')
 		return RETURN_OK;
 	return RETURN_ERROR;
 }
