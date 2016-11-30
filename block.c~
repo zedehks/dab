@@ -2,6 +2,7 @@
 
 block_t* init_block_t(block_t** previous)
 {
+	block_t_header* h = 
 	block_t* b = malloc(sizeof(block_t));
 	b->header = init_block_header(previous);
 	for(int i =0;i<BLOCK_CAPACITY;i++)

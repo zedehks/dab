@@ -28,7 +28,7 @@ void Add_field(field *f,table *t)
 	if(t->first_field = NULL)
 		t->first_field = f;
 	else{
-		field *h = NULL;//malloc(sizeof(field));
+		field *h = NULL//malloc(sizeof(field));
 		h = t->first_field;
 		//if (h != NULL);
 		while(h->next_field != NULL){

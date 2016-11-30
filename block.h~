@@ -7,7 +7,7 @@
 
 #include "table.h"
 
-#define BLOCK_CAPACITY 9
+#define BLOCK_CAPACITY 2
 
 typedef struct block_t block_t;
 typedef struct block_t_header block_t_header;

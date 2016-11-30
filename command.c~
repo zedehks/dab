@@ -91,22 +91,11 @@ void edit_table(block_t** b)
 
 		print_help(1);
 
-		/*printf("\nReady.\n");
-		fgets(input,32,stdin);
-		int len = strlen(input);
-		if (len > 0 && input[len-1] == '\n')
-			  input[len_t-1] = '\0';
-		
-		char input[32];
-		for(int i = 0;i<32;i++)
-			input[i] = '\0';*/
-
-
 		printf("\nReady.\n");
 		fgets(input,32,stdin);
 		int len = strlen(input);
 		if (len > 0 && input[len-1] == '\n')
-			  input[len-1] = '\0';
+			  input[len_t-1] = '\0';
 
 		int exit = 0;
 		while(exit == 0){
@@ -134,8 +123,6 @@ void edit_table(block_t** b)
 
 			else if(parse_command(input,"back") == TRUE)
 				exit = 1;	
-			else
-				printf("?\n");
 		}
 	}
 }
