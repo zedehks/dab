@@ -11,6 +11,7 @@ block_t* init_block_t(block_t** previous)
 		(*previous)->header->next = b;
 	return b;
 }
+
 block_t_header* init_block_header(block_t** previous)
 {
 	block_t_header* h = malloc(sizeof(block_t_header));
@@ -58,3 +59,4 @@ void free_block(block_t** b)
 		free(tmp2);
 	}
 }
+

@@ -25,7 +25,7 @@ int get_command(block_t** b)
 		  input[len-1] = '\0';
 
 	if(parse_command(input,"help") == TRUE)
-		print_help();
+		print_help(0);
 	else if(parse_command(input,"exit") == TRUE)
 		return	CODE_EXIT;
 	else if(parse_command(input,"add") == TRUE)
@@ -34,11 +34,8 @@ int get_command(block_t** b)
 		clear();
 	else if(parse_command(input,"list") == TRUE)
 		list_tables(b);
-	else if(parse_command(input,"search") == TRUE)
-	{
-		table *t = search_tables(input, b);
-		if(t != NULL) printf("\nFound Table %s", t->name);
-	}
+	else if(parse_command(input,"edit") == TRUE)
+		edit_table(b);
 	else
 		printf("?\n");
 	return 0;
@@ -52,7 +49,7 @@ void list_tables(block_t**b)
 	{
 		if(tmp->tables[i] == NULL) 
 		{
-			//printf("\nNo tables have been created.\n");
+			printf("\nNo tables have been created.\n");
 			return;
 		}
 		printf("Table %s\n", tmp->tables[i]->name);
@@ -60,17 +57,85 @@ void list_tables(block_t**b)
 	
 	list_tables( &(tmp->header->next) );
 }
+
+void edit_table(block_t** b)
+{
+	table *t;
+	field *f;
+
+	char f_name[32];
+	char *f_type[32];
+
+	char input[32];
+	char search_t[32];
+	for(int i = 0;i<32;i++){
+		input[i] = '\0';
+		search_t[i] = '\0';
+	}
+
+
+	printf("\nWhat table do you wanna edit.\n");
+	fgets(search_t,32,stdin);
+	int len_t = strlen(search_t);
+	if (len_t > 0 && search_t[len_t-1] == '\n')
+		  search_t[len_t-1] = '\0';
+
+	t = search_tables(search_t, b);
+
+	if(t == NULL){
+		printf("Table not found\n");
+		return;
+	}
+	else{
+	//printf("%s\n\t\t\t\t\n", t->name);
+
+		print_help(1);
+
+		printf("\nReady.\n");
+		fgets(input,32,stdin);
+		int len = strlen(input);
+		if (len > 0 && input[len-1] == '\n')
+			  input[len_t-1] = '\0';
+
+		int exit = 0;
+		while(exit == 0){
+
+			if(parse_command(input,"print") == TRUE)
+				print_table(t);
+
+			else if(parse_command(input,"field") == TRUE){
+
+				printf("Name of the new field: ");
+				scanf("%s", &f_name);
+
+				printf("Type of field: ");
+				scanf("%s", &f_type);
+
+				f = init_field(f_name,f_type);
+				Add_field(f,t);
+				printf("\nField added succesfully!\n");
+			}
+
+			else if(parse_command(input,"registry") == TRUE)
+				Add_registry_Table(t);
+
+			else if(parse_command(input,"back") == TRUE)
+				exit = 1;	
+		}
+	}
+}
+
 table* search_tables(char* name, block_t** b)
 {
-	char* command;
+	/*char* command;
 	command = strtok(name," ");
 	command = strtok(NULL," ");
 	if(command == NULL) 
 	{
 		printf("\nPlease enter a name.\n");
-		return;
-	}
-
+		return NULL;
+	}*/
+	
 	block_t* tmp = (*b);
 
 	if((tmp) == NULL) 
@@ -79,14 +144,13 @@ table* search_tables(char* name, block_t** b)
 	}
 	for(int i=0;i< BLOCK_CAPACITY;i++)
 	{	
-		if(i >= tmp->header->amount_tables) break;
-	//	printf("Table %s\n", tmp->tables[i]->name);
-		if(!strcmp((tmp->tables[i]->name), command))
+		if(i >= tmp->header->amount_tables) 
+			break;
+		if(!strcmp((tmp->tables[i]->name), name))
 		{
 			printf("\nEncontrado...");
 			return tmp->tables[i];
 		}
-		//tmp = tmp->header->next;
 	}
 		printf("\nNo Encontrado...");
 		return NULL;
@@ -136,17 +200,27 @@ int parse_command(char command[32],char* comparison)
 	return TRUE;
 }
 
-void print_help()
+void print_help(int option)
 {
-	printf("\n\nUsage: [COMMAND] (PARAMETER)\n");
-	printf("Note the space between the command and the parameter (if needed).");
-	//printf("\nArguments choose the data structure:");
-	printf("\n\nadd [NAME]\tAdd a table with the given name (maximum length %d)\n",TABLE_NAME_LENGTH);
-	printf("\nsearch [NAME]\tsearch a table with the given name (maximum length %d)\n",TABLE_NAME_LENGTH);
-	printf("\nlist\tList all available tables\n");
-	printf("\nclear\tclears screen, may -not- work in non-POSIX terminals.\n");
-	printf("\nhelp\tPrint this help page\n");
-	printf("\nexit\tThis does something iunno what\n\n\n");
 
+	if(option == 0){
+		printf("\n\nUsage: [COMMAND] (PARAMETER)\n");
+		printf("Note the space between the command and the parameter (if needed).");
+		//printf("\nArguments choose the data structure:");
+		printf("\n\nadd [NAME]\tAdd a table with the given name (maximum length %d)\n",TABLE_NAME_LENGTH);
+		printf("\nedit\tgoes directly to edit's submenu\n");
+		printf("\nlist\tList all available tables\n");
+		printf("\nclear\tclears screen, may -not- work in non-POSIX terminals.\n");
+		printf("\nhelp\tPrint this help page\n");
+		printf("\nexit\tThis does something iunno what\n\n\n");
+	}
+	else{
+		printf("\n\nUsage: [COMMAND] (PARAMETER)\n");
+		printf("Note the space between the command and the parameter (if needed).");
+		//printf("\nArguments choose the data structure:");
+		printf("\n\nfield [NAME]\tadds a fields within the table (maximum length %d)\n",FIELD_NAME_LENGTH);
+		printf("\nregistry [NAME]\tadds a registry within a field (maximum length %d)\n",REGISTRY_NAME_LENGTH);
+		printf("\nprint\tprints all tables, fields & registry available on the table\n");
+		printf("\nback\tgoes back to main screen.\n");
+	}
 }
-

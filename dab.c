@@ -22,7 +22,7 @@ int main()
 	if(rand()%10 >=8) tagline = "Because Memes";
 
 	printf("\n~~DAB: %s~~\n",tagline);
-	print_help();
+	print_help(0);
 
 	int exit=0;
 	while(exit == 0)
