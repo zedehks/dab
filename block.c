@@ -1,61 +1,50 @@
 #include "block.h"
 
-block_t* init_block_t(block_t** previous)
+int init_block(char type,int number, Block** b)
 {
-	block_t* b = malloc(sizeof(block_t));
-	b->header = init_block_header(previous);
-	for(int i =0;i<BLOCK_CAPACITY;i++)
-		b->tables[i] = NULL;
-	if((previous) != NULL) 
-		(*previous)->header->next = b;
-	return b;
-}
-
-block_t_header* init_block_header(block_t** previous)
-{
-	block_t_header* h = malloc(sizeof(block_t_header));
-	h->next = NULL;
-	h->previous = (&previous);
-	h->amount_tables = 0;
-	return h;
-}
-
-int block_add_table(block_t** b, char* name)
-{
-	block_t* tmp = (*b);
-	if((*b)->header->amount_tables == BLOCK_CAPACITY)
-	{
-		printf("\nSwitching block...\n");
-		while( tmp/*->header->next*/ != NULL) 
-			tmp=tmp->header->next;
-		tmp/*->header->next*/ = init_block_header((b));
-		//tmp  = (*b)->header->next;
-		(*b)->header->next = tmp/*->header->next*/;
-
-	}
-	for(int i=0;i<BLOCK_CAPACITY;i++)
-	{
-		if((*b)->tables[i] == NULL)
-		{
-			init_table(&((*b)->tables[i]),0,name);
-			(*b)->header->amount_tables++;
-			break;
-		}
-	}
-return 0;	
-}
-
-void free_block(block_t** b)
-{
+	(*b) = (Block*) malloc(sizeof(Block));
+	if(!(*b))
+		return 0;
+	(*b)->n_block = number;
+	(*b)->type = type;
 	
-	block_t* tmp = (*b);
-	
-	while(tmp != NULL)
+	//TODO, must calculate type size first
+	switch(type)
 	{
-		block_t* tmp2 = tmp;
-		tmp = tmp->header->next;
-		free(tmp2->header);
-		free(tmp2);
+		case 't':
+		for(int i = 0;i<4;i++)
+			(*b)->tables[i] = 0;
+		break;
+		case 'f':
+		for(int i = 0;i<3;i++)
+			(*b)->fields[i] = 0;
+		break;
+		case 'k':
+		for(int i = 0;i<12;i++)
+			(*b)->keys[i] = 0;
+		break;
+		//NOTE: aqui iria la definicion de registros hasheados
+		//el numero de ellos depende del tamaño
+		//todo el bloque (menos el pointer al siguiente) debe pesar
+		//menos de 64 bytes
+		//lo que falte se le agrega al archivo como 0's (int, no '0' o '\0'; 0)
+
 	}
+	(*b)->next = 0;// Remember! not included in binary file!
+	return 1;
+}
+int append_block(Block** first, Block** second)
+{
+	(*first)->next = (*second);
+	if(!((*first)->next))
+		return 0;
+	return 1;
 }
 
+//memory leaks be damned, this is not important atm
+void free_block(Block** b)
+{
+	//free((*b)->content);
+	free((*b)->next);
+	free (*b);
+}
