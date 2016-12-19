@@ -1,25 +1,21 @@
 #include "table.h"
 
-int init_table(table** t, int c, char name[TABLE_NAME_LENGTH])
+int init_table(char name[9], Table** t,int block)
 {
-	(*t) = malloc(sizeof(table));	
-	(*t)->capacity = c;
-	//(*t)->name = name;
+	(*t) = (Table*)malloc(sizeof(Table));
+	if(!(*t))
+		return 0;
 	strcpy((*t)->name,name);
-	//(*t)->next = NULL;
-	if(!(*t) == '\0')
-		return RETURN_OK;
-	return RETURN_ERROR;
+	(*t)->first_field_block = block;
+	return 1;
 }
-
-/*int append_table(table** original,int c)
+int init_field(char name[9], Field** f,int block_cur, int block_next)
 {
-	table* t = NULL;
-	if(init_table(&t,c) == RETURN_ERROR) 
-		return RETURN_ERROR;
-	table* tmp = (*original);
-	//while(tmp->next != NULL)
-
-
+	(*f) = (Field*)malloc(sizeof(Field));
+	if(!(*f))
+		return 0;
+	strcpy((*f)->name,name);
+	(*f)->first_registry_block = block_cur;
+	(*f)->next_field_block = block_next;
+	return 1;
 }
-*/

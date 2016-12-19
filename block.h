@@ -1,33 +1,28 @@
 #ifndef BLOCK_H
 #define BLOCK_H
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "table.h"
-#include "field.h"
-#define BLOCK_CAPACITY 4
+#include "hash.h"
+#define BLOCK_SIZE 64//bytes per physical block
+typedef struct block_header Block;
 
-typedef struct block_t block_t;
-typedef struct block_t_header block_t_header;
-
-struct block_t
+struct block_header
 {
-	block_t_header* header;
-	table *tables[BLOCK_CAPACITY];
-	field *field[BLOCK_CAPACITY];
-};
-struct block_t_header
-{
-	block_t* next;
-	block_t* previous;
-	int amount_tables;
-	int amount_fields;
-};
+	int n_block;//4 bytes
+	char type;//1 byte
+	Block* next;//8 bytes, but not included in actual binary file!
+	union
+	{
+		Table* tables[4]; //52 bytes (4 tables, 13 bytes each);
+		Field* fields[3]; //51 bytes (3 fields, 17 bytes each);
+		int keys[12];
+		//por aqui iria la definicion de los valores hasheados
+		//en otras palabras, registros
+	};
+};//total 56-57 bytes (when writing, write several zeroes to fill space up to 64 bytes)
 
-block_t* init_block_t(block_t** previous);
-block_t_header* init_block_header(block_t** previous);
-int block_add_table(block_t** b,char* name);
-void free_block(block_t** b);
+int init_block(char type, int number,  Block** b);
+int append_block(Block** first, Block** next);
+void free_block(Block** b);
 #endif /* BLOCK_H */
-
